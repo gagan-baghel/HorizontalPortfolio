@@ -9,19 +9,17 @@ export function Hero({ onNavigate, isMobile = false }) {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.25,
+        staggerChildren: 0.12,
       },
     },
   };
 
-  // Upgraded blur-fade-up animation for the text
   const itemVariants = {
-    hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
+    hidden: { opacity: 0, y: 22 },
     visible: {
       opacity: 1,
       y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
+      transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] },
     },
   };
 
@@ -34,7 +32,7 @@ export function Hero({ onNavigate, isMobile = false }) {
           animate="visible"
           className="relative z-20 flex flex-col items-center justify-center -translate-x-12 -translate-y-12 px-8 text-center md:px-0"
         >
-          <motion.div variants={itemVariants} className="mb-4 inline-block rounded-full border border-white/10 bg-white/5 px-6 py-2 backdrop-blur-md">
+          <motion.div variants={itemVariants} className="mb-4 inline-block rounded-full border border-white/10 bg-white/5 px-6 py-2">
             <p className="text-sm font-semibold tracking-widest text-zinc-300 uppercase">
               Hi, my name is
             </p>
@@ -65,7 +63,7 @@ export function Hero({ onNavigate, isMobile = false }) {
         animate="visible"
         className="relative z-20 mx-auto flex w-full max-w-6xl flex-col items-center justify-center px-5 text-center sm:px-8"
       >
-        <motion.div variants={itemVariants} className="mb-4 inline-block rounded-full border border-white/10 bg-white/5 px-6 py-2 backdrop-blur-md">
+        <motion.div variants={itemVariants} className="mb-4 inline-block rounded-full border border-white/10 bg-white/5 px-6 py-2">
           <p className="text-sm font-semibold tracking-widest text-zinc-300 uppercase">
             Hi, my name is
           </p>
@@ -91,7 +89,7 @@ export function Hero({ onNavigate, isMobile = false }) {
           {heroPills.map((pill) => (
             <span
               key={pill}
-              className="rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.7rem] font-semibold tracking-[0.14em] text-zinc-200 uppercase backdrop-blur-md sm:text-xs"
+              className="rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[0.7rem] font-semibold tracking-[0.14em] text-zinc-200 uppercase sm:text-xs"
             >
               {pill}
             </span>
@@ -112,7 +110,7 @@ export function Hero({ onNavigate, isMobile = false }) {
           <button
             type="button"
             onClick={() => onNavigate?.("contact")}
-            className="w-full rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold tracking-[0.16em] text-zinc-100 uppercase backdrop-blur transition-all hover:border-white/40 hover:bg-white/10 sm:w-auto"
+            className="w-full rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold tracking-[0.16em] text-zinc-100 uppercase transition-all hover:border-white/40 hover:bg-white/10 sm:w-auto"
           >
             Contact Me
           </button>

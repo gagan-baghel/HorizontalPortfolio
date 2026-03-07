@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { GiDoubleFaceMask } from "react-icons/gi";
 import { useScroll, useTransform, motion } from "framer-motion";
-import { About } from "./components/About";
-import { Contact } from "./components/Contact";
 import { Hero } from "./components/Hero";
 import { Navbar } from "./components/Navbar/Navbar";
-import { Projects } from "./components/Projects";
-import { Services } from "./components/Services";
-import { Experience } from "./components/Experience";
 import { MobileFooter } from "./components/MobileFooter";
+
+const About = dynamic(() => import("./components/About").then((mod) => mod.About));
+const Services = dynamic(() => import("./components/Services").then((mod) => mod.Services));
+const Experience = dynamic(() => import("./components/Experience").then((mod) => mod.Experience));
+const Projects = dynamic(() => import("./components/Projects").then((mod) => mod.Projects));
+const Contact = dynamic(() => import("./components/Contact").then((mod) => mod.Contact));
 
 const sections = [
   { id: "home", label: "Home" },
@@ -25,28 +27,42 @@ const MOBILE_MEDIA_QUERY = "(max-width: 1023px)";
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [deferReady, setDeferReady] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(MOBILE_MEDIA_QUERY);
-    const handleChange = (event) => {
-      setIsMobileViewport(event.matches);
-      setIsNavOpen(false);
-    };
-
-    setIsMobileViewport(mediaQuery.matches);
+    const handleChange = () => setIsNavOpen(false);
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
+  useEffect(() => {
+    const run = () => setDeferReady(true);
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(run, { timeout: 500 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const timeoutId = window.setTimeout(run, 250);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll(
-    isMobileViewport ? undefined : { target: containerRef },
-  );
+  const { scrollYProgress } = useScroll({ target: containerRef });
 
   const x = useTransform(scrollYProgress, [0, 1], ["0vw", "-525vw"]);
 
+  const DeferredPlaceholder = ({ id }) => (
+    <section
+      id={id}
+      className="flex min-h-[45vh] w-full items-center justify-center border border-white/5 bg-black/40 px-6 py-14"
+      aria-hidden="true"
+    >
+      <div className="h-2 w-20 animate-pulse rounded-full bg-white/20" />
+    </section>
+  );
+
   const scrollToSection = (id) => {
+    const isMobileViewport = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
     if (isMobileViewport) {
       const section = document.getElementById(id);
       if (section) {
@@ -69,21 +85,21 @@ function App() {
   };
 
   const mobileLayout = (
-    <div className="w-full">
+    <div className="w-full lg:hidden">
       <section id="home" className="w-full">
         <Hero onNavigate={scrollToSection} isMobile />
       </section>
-      <About />
-      <Services />
-      <Experience />
-      <Projects />
-      <Contact />
+      {deferReady ? <About /> : <DeferredPlaceholder id="about" />}
+      {deferReady ? <Services /> : <DeferredPlaceholder id="services" />}
+      {deferReady ? <Experience /> : <DeferredPlaceholder id="experience" />}
+      {deferReady ? <Projects /> : <DeferredPlaceholder id="projects" />}
+      {deferReady ? <Contact /> : <DeferredPlaceholder id="contact" />}
       <MobileFooter onNavigate={scrollToSection} />
     </div>
   );
 
   const desktopLayout = (
-    <div ref={containerRef} className="relative h-[600vh] bg-black">
+    <div ref={containerRef} className="relative hidden h-[600vh] bg-black lg:block">
       <div className="fixed left-0 top-0 h-screen w-full overflow-hidden">
         <motion.div style={{ x }} className="flex h-screen w-[625vw]">
           <section id="home" className="relative mr-[5vw] h-full w-[100vw] overflow-hidden">
@@ -91,23 +107,23 @@ function App() {
           </section>
 
           <div className="mr-[5vw] h-full w-[100vw] flex-shrink-0 overflow-hidden">
-            <About />
+            {deferReady ? <About /> : <DeferredPlaceholder id="about" />}
           </div>
 
           <div className="mr-[5vw] h-full w-[100vw] flex-shrink-0 overflow-hidden">
-            <Services />
+            {deferReady ? <Services /> : <DeferredPlaceholder id="services" />}
           </div>
 
           <div className="mr-[5vw] h-full w-[100vw] flex-shrink-0 overflow-hidden">
-            <Experience />
+            {deferReady ? <Experience /> : <DeferredPlaceholder id="experience" />}
           </div>
 
           <div className="mr-[5vw] h-full w-[100vw] flex-shrink-0 overflow-hidden">
-            <Projects />
+            {deferReady ? <Projects /> : <DeferredPlaceholder id="projects" />}
           </div>
 
           <div className="h-full w-[100vw] flex-shrink-0 overflow-hidden">
-            <Contact />
+            {deferReady ? <Contact /> : <DeferredPlaceholder id="contact" />}
           </div>
         </motion.div>
       </div>
@@ -141,7 +157,8 @@ function App() {
         />
       )}
 
-      {isMobileViewport ? mobileLayout : desktopLayout}
+      {mobileLayout}
+      {desktopLayout}
     </div>
   );
 

@@ -1,8 +1,8 @@
 import { Space_Grotesk, Archivo } from "next/font/google";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-space" });
-const archivo = Archivo({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-archivo" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-space" });
+const archivo = Archivo({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-archivo" });
 
 export const metadata = {
   metadataBase: new URL("https://gaganbaghel.com"),

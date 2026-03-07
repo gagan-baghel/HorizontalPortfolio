@@ -32,7 +32,6 @@ export function Contact() {
             alt="Mailman Illustration"
             className="w-full max-w-xs rounded-xl object-cover opacity-80 sm:max-w-sm"
             sizes="(max-width: 768px) 90vw, 40vw"
-            priority
           />
         </motion.div>
 
